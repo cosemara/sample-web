@@ -7,14 +7,14 @@ function number_format(number, decimals, dec_point, thousands_sep) {
   // *     return: '1 234,56'
   number = (number + '').replace(',', '').replace(' ', '');
   var n = !isFinite(+number) ? 0 : +number,
-    prec = !isFinite(+decimals) ? 0 : Math.abs(decimals),
-    sep = (typeof thousands_sep === 'undefined') ? ',' : thousands_sep,
-    dec = (typeof dec_point === 'undefined') ? '.' : dec_point,
-    s = '',
-    toFixedFix = function(n, prec) {
-      var k = Math.pow(10, prec);
-      return '' + Math.round(n * k) / k;
-    };
+      prec = !isFinite(+decimals) ? 0 : Math.abs(decimals),
+      sep = (typeof thousands_sep === 'undefined') ? ',' : thousands_sep,
+      dec = (typeof dec_point === 'undefined') ? '.' : dec_point,
+      s = '',
+      toFixedFix = function (n, prec) {
+        var k = Math.pow(10, prec);
+        return '' + Math.round(n * k) / k;
+      };
   // Fix for IE parseFloat(0.55).toFixed(0) = 0;
   s = (prec ? toFixedFix(n, prec) : '' + Math.round(n)).split('.');
   if (s[0].length > 3) {
@@ -29,12 +29,13 @@ function number_format(number, decimals, dec_point, thousands_sep) {
 
 // Area Chart Example
 var ctx = document.getElementById("myAreaChart");
+
 var myLineChart = new Chart(ctx, {
   type: 'line',
   data: {
-    labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
+    labels: chartData.labels,
     datasets: [{
-      label: "Earnings",
+      label: "출석 횟수",
       lineTension: 0.3,
       backgroundColor: "rgba(78, 115, 223, 0.05)",
       borderColor: "rgba(78, 115, 223, 1)",
@@ -46,7 +47,21 @@ var myLineChart = new Chart(ctx, {
       pointHoverBorderColor: "rgba(78, 115, 223, 1)",
       pointHitRadius: 10,
       pointBorderWidth: 2,
-      data: [0, 10000, 5000, 15000, 10000, 20000, 15000, 25000, 20000, 30000, 25000, 40000],
+      data: chartData.attendedCounts,
+    }, {
+      label: "결석 횟수",
+      lineTension: 0.3,
+      backgroundColor: "rgba(231, 74, 59, 0.05)",
+      borderColor: "rgba(231, 74, 59, 1)",
+      pointRadius: 3,
+      pointBackgroundColor: "rgba(231, 74, 59, 1)",
+      pointBorderColor: "rgba(231, 74, 59, 1)",
+      pointHoverRadius: 3,
+      pointHoverBackgroundColor: "rgba(231, 74, 59, 1)",
+      pointHoverBorderColor: "rgba(231, 74, 59, 1)",
+      pointHitRadius: 10,
+      pointBorderWidth: 2,
+      data: chartData.cancelledCounts
     }],
   },
   options: {
@@ -69,7 +84,7 @@ var myLineChart = new Chart(ctx, {
           drawBorder: false
         },
         ticks: {
-          maxTicksLimit: 7
+          maxTicksLimit: 10
         }
       }],
       yAxes: [{
@@ -77,8 +92,8 @@ var myLineChart = new Chart(ctx, {
           maxTicksLimit: 5,
           padding: 10,
           // Include a dollar sign in the ticks
-          callback: function(value, index, values) {
-            return '$' + number_format(value);
+          callback: function (value, index, values) {
+            return number_format(value);
           }
         },
         gridLines: {
@@ -108,9 +123,9 @@ var myLineChart = new Chart(ctx, {
       mode: 'index',
       caretPadding: 10,
       callbacks: {
-        label: function(tooltipItem, chart) {
+        label: function (tooltipItem, chart) {
           var datasetLabel = chart.datasets[tooltipItem.datasetIndex].label || '';
-          return datasetLabel + ': $' + number_format(tooltipItem.yLabel);
+          return datasetLabel + ': ' + number_format(tooltipItem.yLabel);
         }
       }
     }
