@@ -1,0 +1,20 @@
+package com.sample.web.sampleweb.service.packaze;
+
+import com.sample.web.sampleweb.repository.packaze.PackageEntity;
+import com.sample.web.sampleweb.repository.packaze.PackageRepository;
+import java.util.List;
+import org.springframework.stereotype.Service;
+
+@Service
+public class PackageService {
+    private final PackageRepository packageRepository;
+
+    public PackageService(PackageRepository packageRepository) {
+        this.packageRepository = packageRepository;
+    }
+
+    public List<Package> getAllPackages() {
+        List<PackageEntity> bulkPassEntities = packageRepository.findAllByOrderByPackageName();
+        return PackageModelMapper.INSTANCE.map(bulkPassEntities);
+    }
+}
